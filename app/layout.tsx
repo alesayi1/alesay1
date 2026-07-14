@@ -15,7 +15,7 @@ export default async function RootLayout({
 
   // 2. إن لم توجد، نقرأ من متصفح الزائر
   if (!lang || !languages.includes(lang as Language)) {
-    const acceptLanguage = await headers().get('accept-language') || '';
+    const acceptLanguage = (await headers()).get('accept-language') || '';
     const preferred = acceptLanguage.split(',')[0]?.split('-')[0];
     if (preferred && languages.includes(preferred as Language)) {
       lang = preferred;
