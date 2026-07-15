@@ -1,7 +1,9 @@
-import { cookies, headers } from 'next/headers';
+
+import { headers, cookies } from 'next/headers';
 import { defaultLanguage, languages, getTranslations, Language } from '@/locales';
-import Layout from '@/components/layout/Layout';
 import { I18nProvider } from '@/components/custom/I18nProvider';
+import { ThemeProvider } from '@/components/custom/ThemeProvider';
+import Layout from '@/components/layout/Layout';
 import './globals.css';
 
 export default async function RootLayout({
@@ -9,33 +11,28 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. قراءة اللغة من الكوكيز
+  // قراءة اللغة من الكوكيز أو المتصفح
   const cookieStore = await cookies();
   let lang = cookieStore.get('lang')?.value;
-
-  // 2. إن لم توجد، نقرأ من متصفح الزائر
   if (!lang || !languages.includes(lang as Language)) {
     const acceptLanguage = (await headers()).get('accept-language') || '';
     const preferred = acceptLanguage.split(',')[0]?.split('-')[0];
-    if (preferred && languages.includes(preferred as Language)) {
-      lang = preferred;
-    } else {
-      lang = defaultLanguage;
-    }
+    lang = preferred && languages.includes(preferred as Language) ? preferred : defaultLanguage;
   }
-
-  // 3. تحميل الترجمات
   const translations = getTranslations(lang as Language);
-
-  // 4. تحديد اتجاه النص
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
 
+  // قراءة الثيم من الكوكيز
+  const theme = cookieStore.get('theme')?.value === 'dark' ? 'dark' : 'light';
+
   return (
-    <html lang={lang} dir={dir}>
+    <html lang={lang} dir={dir} className={theme}>
       <body>
-        <I18nProvider lang={lang as Language} translations={translations}>
-          <Layout>{children}</Layout>
-        </I18nProvider>
+        <ThemeProvider initialTheme={theme}>
+          <I18nProvider lang={lang as Language} translations={translations}>
+            <Layout>{children}</Layout>
+          </I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,7 +1,8 @@
 {
-    "hello": "مرحباً",
-    "home": "الرئيسية",
-    "about": "عن الموقع",
-    "contact": "اتصل بنا",
-    "change_language": "تغيير اللغة"
-}
+      "hello": "مرحباً",
+        "home": "الرئيسية",
+          "about": "عن الموقع",
+            "contact": "اتصل بنا",
+              "change_language": "تغيير اللغة",
+                "services": "الخدمات"
+                }
